@@ -58,8 +58,8 @@ export function FittingRoomPage() {
       const objects = loaded.objects.filter(Boolean) as FabricObject[]
       const group = util.groupSVGElements(objects, loaded.options)
       group.set({
-        left: 150,
-        top: 20,
+        left: 50,
+        top: 0,
         selectable: false,
         evented: false,
       })
@@ -155,8 +155,8 @@ export function FittingRoomPage() {
     }
 
     const canvas = new Canvas(canvasElRef.current, {
-      width: 700,
-      height: 900,
+      width: 600,
+      height: 960,
       backgroundColor: '#f8fafc',
       preserveObjectStacking: true,
     })

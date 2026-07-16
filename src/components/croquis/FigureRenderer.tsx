@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import type { BodyMeasurements, BodyPose } from '@/types'
-import { generateFigureSvg, CANVAS_W, CANVAS_H } from '@/lib/figureGeometry'
+import { generateFigureSvg } from '@/lib/figureGeometry'
 
 interface Props {
   measurements: BodyMeasurements
@@ -18,7 +18,6 @@ export function FigureRenderer({ measurements, pose = 'front', className }: Prop
     <div
       className={`flex items-center justify-center ${className || ''}`}
       dangerouslySetInnerHTML={{ __html: svgContent }}
-      style={{ minHeight: CANVAS_H / 2 }}
     />
   )
 }
