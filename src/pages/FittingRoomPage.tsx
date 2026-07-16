@@ -12,7 +12,7 @@ import { Dialog } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
 import { generateFigureSvg, CANVAS_W, CANVAS_H } from '@/lib/figureGeometry'
-import type { BodyPose, PatternLayer } from '@/types'
+import type { PatternLayer } from '@/types'
 
 interface FabricObjectWithData extends FabricObject {
   data?: Record<string, unknown>
@@ -24,7 +24,6 @@ export function FittingRoomPage() {
   const navigate = useNavigate()
   const canvasElRef = useRef<HTMLCanvasElement>(null)
   const canvasRef = useRef<Canvas | null>(null)
-  const [pose, setPose] = useState<BodyPose>('front')
   const [zoom, setZoom] = useState(1)
   const [addDialogOpen, setAddDialogOpen] = useState(false)
   const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null)
@@ -53,12 +52,12 @@ export function FittingRoomPage() {
     if (existing) canvas.remove(existing)
 
     try {
-      const svgStr = generateFigureSvg(projectMeasurements, pose)
+      const svgStr = generateFigureSvg(projectMeasurements)
       const loaded = await loadSVGFromString(svgStr)
       const objects = loaded.objects.filter(Boolean) as FabricObject[]
       const group = util.groupSVGElements(objects, loaded.options)
       group.set({
-        left: 50,
+        left: 0,
         top: 0,
         selectable: false,
         evented: false,
@@ -70,7 +69,7 @@ export function FittingRoomPage() {
     } catch (err) {
       console.error('SVG error:', err)
     }
-  }, [projectMeasurements, pose])
+  }, [projectMeasurements])
 
   const saveLayers = useCallback(() => {
     if (!canvasRef.current || !id || !project) return
@@ -102,14 +101,13 @@ export function FittingRoomPage() {
 
     updateProject(id, {
       croquisView: {
-        pose,
         zoom,
         panX: 0,
         panY: 0,
         patternLayers: layers,
       },
     })
-  }, [id, project, pose, zoom, updateProject])
+  }, [id, project, zoom, updateProject])
 
   const loadPatternLayers = useCallback(async () => {
     const canvas = canvasRef.current
@@ -155,8 +153,8 @@ export function FittingRoomPage() {
     }
 
     const canvas = new Canvas(canvasElRef.current, {
-      width: 600,
-      height: 960,
+      width: CANVAS_W,
+      height: CANVAS_H,
       backgroundColor: '#f8fafc',
       preserveObjectStacking: true,
     })
@@ -194,7 +192,7 @@ export function FittingRoomPage() {
 
     renderFigure()
     loadPatternLayers()
-  }, [pose])
+  }, [renderFigure, loadPatternLayers])
 
   const addPatternToCanvas = async (patternId: string) => {
     const pattern = patterns.find((p) => p.id === patternId)
@@ -287,10 +285,6 @@ export function FittingRoomPage() {
     }
   }
 
-  const handlePoseChange = (newPose: BodyPose) => {
-    setPose(newPose)
-  }
-
   const selectedObject = canvasRef.current
     ? canvasRef.current.getObjects().find(
         (o: FabricObjectWithData) => o.data?.layerId === selectedLayerId
@@ -317,21 +311,6 @@ export function FittingRoomPage() {
           </h1>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex border rounded-lg overflow-hidden">
-            {(['front', 'back', 'side'] as BodyPose[]).map((p) => (
-              <button
-                key={p}
-                onClick={() => handlePoseChange(p)}
-                className={`px-3 py-1.5 text-xs font-medium transition-colors ${
-                  pose === p
-                    ? 'bg-primary text-white'
-                    : 'bg-white dark:bg-slate-900 text-slate-600 hover:bg-slate-50'
-                }`}
-              >
-                {t(`fitting.${p}`)}
-              </button>
-            ))}
-          </div>
           <div className="w-px h-6 bg-slate-200" />
           <Button variant="ghost" size="icon" onClick={handleZoomIn} title={t('fitting.zoomIn')}>
             <ZoomIn className="w-4 h-4" />

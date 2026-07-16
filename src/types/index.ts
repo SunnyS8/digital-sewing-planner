@@ -18,8 +18,6 @@ export type ProjectStatus =
   | 'fitting'
   | 'finished'
 
-export type BodyPose = 'front' | 'back' | 'side'
-
 export interface BodyMeasurements {
   id: string
   name: string
@@ -109,7 +107,6 @@ export interface Pattern {
 }
 
 export interface CroquisViewState {
-  pose: BodyPose
   zoom: number
   panX: number
   panY: number

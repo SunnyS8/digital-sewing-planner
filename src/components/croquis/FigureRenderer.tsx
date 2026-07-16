@@ -1,17 +1,16 @@
 import { useMemo } from 'react'
-import type { BodyMeasurements, BodyPose } from '@/types'
+import type { BodyMeasurements } from '@/types'
 import { generateFigureSvg } from '@/lib/figureGeometry'
 
 interface Props {
   measurements: BodyMeasurements
-  pose?: BodyPose
   className?: string
 }
 
-export function FigureRenderer({ measurements, pose = 'front', className }: Props) {
+export function FigureRenderer({ measurements, className }: Props) {
   const svgContent = useMemo(
-    () => generateFigureSvg(measurements, pose),
-    [measurements, pose]
+    () => generateFigureSvg(measurements),
+    [measurements]
   )
 
   return (
