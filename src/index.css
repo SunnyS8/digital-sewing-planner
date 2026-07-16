@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-primary: #d9468b;
+    --color-primary-light: #fbcfe8;
+    --color-primary-dark: #be185d;
+    --color-accent: #7c3aed;
+    --color-accent-light: #ddd6fe;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 antialiased;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+}
